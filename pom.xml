@@ -110,10 +110,16 @@
             <version>4.1.9.Final</version>
             <scope>runtime</scope>
         </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.apache.derby</groupId>-->
+        <!--<artifactId>derby</artifactId>-->
+        <!--<version>10.9.1.0</version>-->
+        <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.9.1.0</version>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901-1.jdbc4</version>
             <scope>runtime</scope>
         </dependency>
         <!-- consider using C3PO and ehcache -->
