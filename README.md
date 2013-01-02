@@ -3,14 +3,6 @@ emokit-java
 
 Open Source Java driver to access raw data from the [Emotiv EPOC EEG](http://www.emotiv.com) headset.
 
-This is a port and extension of [emokit](https://github.com/openyou/emokit).
-
-Thanks go to the following for reverse engineering, original code and assistance:
-
-* [Cody Brocious](http://github.com/daeken)
-* [Kyle Machulis](http://github.com/qdot)
-* [Bill Schumacher](http://github.com/bschumacher)
-
 [![Zoku Screenshot](http://i49.tinypic.com/295s5xy.jpg)](http://youtu.be/Ve7MEuuzXuY)
 
 *(click image for a video of the demonstration data acquisition application)*
@@ -40,7 +32,9 @@ the special `Iterator` will continue until the EEG device is disconnected, or th
 If that happens, a new `Emotiv` instance can be obtained and polled.
 
 Several Java Swing GUI widgets are provided for use in your applications, as demonstrated in the
-bundled *Zoku* data acquisition application.
+bundled *Zoku* data acquisition application. To run the Zoku demo, you must have a PostgreSQL server
+running on `localhost` with a database called `zoku` (this sounds like a pain, but it makes
+integration with [R](http://cran.r-project.org), for analysis, much easier).
 
 
 Donations
@@ -77,3 +71,15 @@ Contributors are encouraged to fork this repository and issue pull
 requests. Contributors implicitly agree to assign an unrestricted licence
 to Sam Halliday, but retain the copyright of their code (this means
 we both have the freedom to update the licence for those contributions).
+
+History
+=======
+
+This is a port and extension of [emokit](https://github.com/openyou/emokit).
+
+Thanks go to the following for reverse engineering, original code and assistance:
+
+* [Cody Brocious](http://github.com/daeken)
+* [Kyle Machulis](http://github.com/qdot)
+* [Bill Schumacher](http://github.com/bschumacher)
+
