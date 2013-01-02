@@ -7,17 +7,18 @@ Open Source Java driver to access raw data from the [Emotiv EPOC EEG](http://www
 
 *(click image for a video of the demonstration data acquisition application)*
 
-Installation
-============
+Demo
+====
 
-Not currently being distributed via Maven Central,
-[but it will be](https://github.com/fommil/emokit-java/issues/2).
+Several Java Swing GUI widgets are provided for use in your applications, as demonstrated in the
+bundled *Zoku* data acquisition application. To run Zoku, you must have a PostgreSQL server
+running on `localhost` with a database called `zoku` (this sounds like a pain, but it makes
+integration with [R](http://cran.r-project.org) much easier).
 
-Clone this repository and install locally using Maven (`mvn install`). If this instructions are beyond you,
-then you are probably not the target audience of this project.
-
-Use
-===
+* run postgresql on localhost, username `postgres`
+* create a database called `zoku`
+* `mvn compile`
+* `mvn exec:java`
 
 Raw access is through the `org.openyou.Emotiv` class:
 
@@ -31,10 +32,14 @@ for (Packet packet : emotiv) {
 the special `Iterator` will continue until the EEG device is disconnected, or there are IO problems.
 If that happens, a new `Emotiv` instance can be obtained and polled.
 
-Several Java Swing GUI widgets are provided for use in your applications, as demonstrated in the
-bundled *Zoku* data acquisition application. To run the Zoku demo, you must have a PostgreSQL server
-running on `localhost` with a database called `zoku` (this sounds like a pain, but it makes
-integration with [R](http://cran.r-project.org), for analysis, much easier).
+Installation
+============
+
+Not currently being distributed via Maven Central,
+[but it will be](https://github.com/fommil/emokit-java/issues/2).
+
+If you wish to build on this library, clone this github repository
+and install locally using Maven (`mvn install`).
 
 
 Donations
