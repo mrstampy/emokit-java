@@ -1,7 +1,7 @@
 // Copyright Samuel Halliday 2012
-package org.openyou.jpa;
+package com.github.fommil.emokit.jpa;
 
-import fommil.persistence.CrudDao;
+import com.github.fommil.persistence.CrudDao;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.UUID;

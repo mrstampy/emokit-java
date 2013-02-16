@@ -1,15 +1,15 @@
 // Copyright Samuel Halliday 2012
 
-package org.openyou.gui;
+package com.github.fommil.emokit.gui;
 
+import com.github.fommil.emokit.Packet;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.extern.java.Log;
-import org.openyou.Emotiv.PacketListener;
-import org.openyou.Packet;
+import com.github.fommil.emokit.Emotiv.PacketListener;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
@@ -30,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Log
 public class SensorView extends JPanel implements PacketListener {
 
-    private final Config config = ConfigFactory.load().getConfig("org.openyou.gui.sensors");
+    private final Config config = ConfigFactory.load().getConfig("com.github.fommil.emokit.gui.sensors");
 
     // TODO: offset per channel
     private final int offset = 8464;

@@ -1,10 +1,10 @@
-package org.openyou.gui;
+package com.github.fommil.emokit.gui;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
-import org.openyou.jpa.EmotivJpaController;
-import org.openyou.jpa.EmotivSession;
+import com.github.fommil.emokit.jpa.EmotivJpaController;
+import com.github.fommil.emokit.jpa.EmotivSession;
 
 import javax.swing.*;
 import java.awt.*;

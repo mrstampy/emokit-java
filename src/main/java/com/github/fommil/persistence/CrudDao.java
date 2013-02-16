@@ -1,5 +1,5 @@
 // Copyright Samuel Halliday 2009
-package fommil.persistence;
+package com.github.fommil.persistence;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;

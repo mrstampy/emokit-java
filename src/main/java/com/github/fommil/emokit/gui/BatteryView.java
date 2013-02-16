@@ -1,9 +1,9 @@
 // Copyright Samuel Halliday 2012
 
-package org.openyou.gui;
+package com.github.fommil.emokit.gui;
 
-import org.openyou.Emotiv;
-import org.openyou.Packet;
+import com.github.fommil.emokit.Emotiv;
+import com.github.fommil.emokit.Packet;
 
 import javax.swing.*;
 

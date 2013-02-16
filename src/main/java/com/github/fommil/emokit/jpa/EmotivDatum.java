@@ -1,10 +1,10 @@
 // Copyright Samuel Halliday 2012
-package org.openyou.jpa;
+package com.github.fommil.emokit.jpa;
 
+import com.github.fommil.emokit.Packet;
 import com.google.common.base.Preconditions;
 import lombok.Data;
-import org.openyou.Packet;
-import org.openyou.Packet.Sensor;
+import com.github.fommil.emokit.Packet.Sensor;
 
 import javax.persistence.*;
 import java.util.Date;

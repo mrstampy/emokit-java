@@ -1,5 +1,6 @@
-package org.openyou.gui;
+package com.github.fommil.emokit.gui;
 
+import com.github.fommil.emokit.Emotiv;
 import com.google.common.collect.Maps;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
@@ -7,9 +8,8 @@ import com.typesafe.config.ConfigFactory;
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.Setter;
-import org.openyou.Emotiv;
-import org.openyou.Packet;
-import org.openyou.Packet.Sensor;
+import com.github.fommil.emokit.Packet;
+import com.github.fommil.emokit.Packet.Sensor;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -39,7 +39,7 @@ public class SensorQualityView extends JPanel implements Emotiv.PacketListener {
 
     public SensorQualityView() {
         super(new BorderLayout());
-        Config config = ConfigFactory.load().getConfig("org.openyou.gui.quality");
+        Config config = ConfigFactory.load().getConfig("com.github.fommil.emokit.gui.quality");
 
         try {
             @Cleanup InputStream stream = getClass().getResourceAsStream(config.getString("image"));

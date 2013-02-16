@@ -1,5 +1,5 @@
 // Copyright Samuel Halliday 2012
-package org.openyou.jpa;
+package com.github.fommil.emokit.jpa;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;

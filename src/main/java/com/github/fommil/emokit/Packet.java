@@ -1,14 +1,12 @@
 // Copyright Samuel Halliday 2012
-package org.openyou;
+package com.github.fommil.emokit;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Ordering;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.util.Date;
 import java.util.EnumMap;
@@ -19,7 +17,7 @@ import java.util.Map;
  * <p/>
  * This is not designed for easy persistence: clients are
  * advised to use their own persistent format or convert
- * to {@link org.openyou.jpa.EmotivDatum}.
+ * to {@link com.github.fommil.emokit.jpa.EmotivDatum}.
  * <p>
  * Note: this comparator imposes orderings that are inconsistent with equals.
  *

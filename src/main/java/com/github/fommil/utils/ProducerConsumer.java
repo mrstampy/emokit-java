@@ -1,5 +1,5 @@
 // Copyright Samuel Halliday 2012
-package fommil.utils;
+package com.github.fommil.utils;
 
 import java.util.Iterator;
 import java.util.Queue;

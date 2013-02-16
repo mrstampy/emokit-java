@@ -1,12 +1,12 @@
 // Copyright Samuel Halliday 2012
 
-package org.openyou.gui;
+package com.github.fommil.emokit.gui;
 
+import com.github.fommil.emokit.Packet;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.extern.java.Log;
-import org.openyou.Emotiv;
-import org.openyou.Packet;
+import com.github.fommil.emokit.Emotiv;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ import java.awt.*;
 @Log
 public class GyroView extends JPanel implements Emotiv.PacketListener {
 
-    private final Config config = ConfigFactory.load().getConfig("org.openyou.gui.gyro");
+    private final Config config = ConfigFactory.load().getConfig("com.github.fommil.emokit.gui.gyro");
     private final int xCorrection = config.getInt("correction.x");
     private final int yCorrection = config.getInt("correction.y");
 

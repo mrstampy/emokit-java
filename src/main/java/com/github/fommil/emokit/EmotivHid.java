@@ -1,5 +1,5 @@
 // Copyright Samuel Halliday 2012
-package org.openyou;
+package com.github.fommil.emokit;
 
 import com.codeminders.hidapi.*;
 import com.google.common.collect.Lists;
@@ -142,7 +142,7 @@ final class EmotivHid implements Closeable {
                 byte[] report = new byte[9];
                 int size = dev.getFeatureReport(report);
                 byte[] result = Arrays.copyOf(report, size);
-                log.info(format("Found (%s) %s [%s] with report: %s",
+                EmotivHid.log.info(format("Found (%s) %s [%s] with report: %s",
                         dev.getManufacturerString(),
                         dev.getProductString(),
                         dev.getSerialNumberString(),

@@ -20,7 +20,7 @@ integration with [R](http://cran.r-project.org) much easier).
 * `mvn compile`
 * `mvn exec:java`
 
-Raw access is through the `org.openyou.Emotiv` class:
+Raw access is through the `com.github.fommil.emokit.Emotiv` class:
 
 ```java
 Emotiv emotiv = new Emotiv();

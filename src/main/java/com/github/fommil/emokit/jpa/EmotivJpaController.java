@@ -1,15 +1,15 @@
 // Copyright Samuel Halliday 2012
 
-package org.openyou.jpa;
+package com.github.fommil.emokit.jpa;
 
+import com.github.fommil.emokit.Emotiv;
+import com.github.fommil.emokit.Packet;
 import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
-import org.openyou.Emotiv;
-import org.openyou.Packet;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.concurrent.Executor;
@@ -46,7 +46,7 @@ public class EmotivJpaController implements Emotiv.PacketListener {
         datumCrud = new EmotivDatumCrud(emf);
         sessionCrud = new EmotivSessionCrud(emf);
 
-        Config config = ConfigFactory.load().getConfig("org.openyou.jpa.controller");
+        Config config = ConfigFactory.load().getConfig("com.github.fommil.emokit.jpa.controller");
         int threads = config.getInt("threads");
         executor = Executors.newFixedThreadPool(threads);
     }

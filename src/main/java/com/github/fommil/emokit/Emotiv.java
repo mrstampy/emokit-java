@@ -1,12 +1,12 @@
 // Copyright Samuel Halliday 2012
-package org.openyou;
+package com.github.fommil.emokit;
 
 import com.google.common.collect.Maps;
-import fommil.utils.ProducerConsumer;
+import com.github.fommil.utils.ProducerConsumer;
 import lombok.Getter;
 import lombok.extern.java.Log;
-import org.openyou.jpa.EmotivDatum;
-import org.openyou.jpa.EmotivSession;
+import com.github.fommil.emokit.jpa.EmotivDatum;
+import com.github.fommil.emokit.jpa.EmotivSession;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.crypto.Cipher;
@@ -41,7 +41,7 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
             EmotivDatum datum = EmotivDatum.fromPacket(packet);
             datum.setSession(session);
 
-            log.info(datum.toString());
+            Emotiv.log.info(datum.toString());
         }
     }
 
@@ -108,7 +108,7 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
                         // the counter is used to mixin battery and quality levels
                         byte counter = decrypted[0];
                         if (counter != lastCounter + 1 && lastCounter != 127)
-                            log.config("missed a packet");
+                            Emotiv.log.config("missed a packet");
 
                         if (counter < 0) {
                             lastCounter = -1;
@@ -127,13 +127,13 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
                         iterator.produce(packet);
 
                         long end = System.currentTimeMillis();
-                        log.config("Decryption time: " + (end - start));
+                        Emotiv.log.config("Decryption time: " + (end - start));
                         if ((end - start) > 7) {
-                            log.warning("Decryption took longer than expected: " + (end - start));
+                            Emotiv.log.warning("Decryption took longer than expected: " + (end - start));
                         }
                     }
                 } catch (Exception e) {
-                    log.log(Level.SEVERE, "Problem when polling", e);
+                    Emotiv.log.log(Level.SEVERE, "Problem when polling", e);
                     iterator.close();
                     try {
                         close();
