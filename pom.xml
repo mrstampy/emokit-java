@@ -4,51 +4,44 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.openyou</groupId>
+    <groupId>com.github.fommil</groupId>
     <artifactId>emokit</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
     <packaging>jar</packaging>
-
+    <name>Emokit for Java</name>
+    <description>Java driver to access raw data from an Emotiv EPOC EEG headset.</description>
+    <url>https://github.com/fommil/emokit-java</url>
+    <licenses>
+        <license>
+            <name>GPL</name>
+            <url>http://www.gnu.org/licenses/gpl.txt</url>
+        </license>
+    </licenses>
     <scm>
-        <connection>scm:git:git@github.com:fommil/emokit-java.git</connection>
         <url>https://github.com/fommil/emokit-java</url>
+        <connection>scm:git:git@github.com:fommil/emokit-java.git</connection>
+        <developerConnection>scm:git:git@github.com:fommil/emokit-java.git</developerConnection>
     </scm>
-
     <developers>
         <developer>
+            <name>Sam Halliday</name>
             <id>fommil</id>
-            <name>Samuel Halliday</name>
             <email>sam.halliday@gmail.com</email>
         </developer>
     </developers>
-
-    <licenses>
-        <license>
-            <name>GNU General Public License, Version 3</name>
-            <url>http://www.gnu.org/licenses/gpl-3.0-standalone.html</url>
-            <comments>
-                Copyright (C) 2012 Samuel Halliday
-
-                This program is free software: you can redistribute it and/or modify
-                it under the terms of the GNU General Public License as published by
-                the Free Software Foundation, either version 3 of the License, or
-                (at your option) any later version.
-
-                This program is distributed in the hope that it will be useful,
-                but WITHOUT ANY WARRANTY; without even the implied warranty of
-                MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-                GNU General Public License for more details.
-
-                You should have received a copy of the GNU General Public License
-                along with this program. If not, see http://www.gnu.org/licenses/
-            </comments>
-        </license>
-    </licenses>
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/fommil/emokit-java/issues</url>
+    </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <exec.mainClass>org.openyou.gui.Zoku</exec.mainClass>
-        <!--<exec.args>-ea -Djava.util.logging.config.file=logging.properties</exec.args>-->
     </properties>
 
     <repositories>
@@ -80,7 +73,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>13.0</version>
+            <version>13.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
@@ -107,7 +100,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.1.9.Final</version>
+            <version>4.2.0.CR1</version>
             <scope>runtime</scope>
         </dependency>
         <!--<dependency>-->
@@ -138,12 +131,17 @@
         </dependency>
     </dependencies>
 
+    <prerequisites>
+        <maven>3.0.3</maven>
+    </prerequisites>
+
     <build>
         <!-- mvn versions:display-plugin-updates -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.6</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -157,6 +155,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -170,6 +169,42 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.openyou.gui.Zoku</mainClass>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>java.util.logging.config.file</key>
+                            <value>logging.properties</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
