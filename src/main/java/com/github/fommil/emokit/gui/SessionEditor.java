@@ -1,14 +1,16 @@
 package com.github.fommil.emokit.gui;
 
+import com.github.fommil.emokit.jpa.EmotivJpaController;
+import com.github.fommil.emokit.jpa.EmotivSession;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
-import com.github.fommil.emokit.jpa.EmotivJpaController;
-import com.github.fommil.emokit.jpa.EmotivSession;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Sam Halliday
@@ -20,8 +22,8 @@ public class SessionEditor extends JPanel {
     @Setter
     private EmotivJpaController controller;
 
-    private final JTextField title = new JTextField();
-    private final JTextArea notes = new JTextArea();
+    private final JTextField title = new JTextField("");
+    private final JTextArea notes = new JTextArea("");
     private final JButton start, stop;
 
     public SessionEditor() {
@@ -103,29 +105,34 @@ public class SessionEditor extends JPanel {
 
     private void stop() {
         controller.setRecording(false);
-        title.setText("");
+        title.setText(updateTitle());
         start.setEnabled(true);
         stop.setEnabled(false);
-        EmotivSession session = new EmotivSession();
-        controller.setSession(session);
+    }
+
+    private String updateTitle() {
+        Matcher matcher = Pattern.compile("^(.*)(\\d++)$").matcher(title.getText());
+        if (!matcher.find())
+            return title.getText() + "1";
+        return matcher.group(1) + (Integer.parseInt(matcher.group(2)) + 1);
     }
 
     private void titleChanged() {
-        EmotivSession session = controller.getSession();
-        if (session != null) {
+        if (controller.isRecording()) {
+            EmotivSession session = controller.getSession();
             session.setName(title.getText());
             controller.updateSession(session);
+            title.setBorder(null);
         }
-        title.setBorder(null);
     }
 
     private void notesChanged() {
-        EmotivSession session = controller.getSession();
-        if (session != null) {
+        if (controller.isRecording()) {
+            EmotivSession session = controller.getSession();
             session.setNotes(notes.getText());
             controller.updateSession(session);
+            notes.setBorder(null);
         }
-        notes.setBorder(null);
     }
 
 }
