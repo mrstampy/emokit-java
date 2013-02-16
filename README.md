@@ -35,11 +35,32 @@ If that happens, a new `Emotiv` instance can be obtained and polled.
 Installation
 ============
 
-Not currently being distributed via Maven Central,
-[but it will be](https://github.com/fommil/emokit-java/issues/2).
+Snapshots are distributed on Sonatype's Snapshot Repository:
 
-If you wish to build on this library, clone this github repository
-and install locally using Maven (`mvn install`).
+```xml
+<dependency>
+  <groupId>com.github.fommil</groupId>
+  <artifactId>emokit</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+
+If the above fails, ensure you have the following in your `pom.xml`:
+
+```xml
+    <repositories>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+```
 
 
 Donations
