@@ -22,6 +22,7 @@ public class SessionEditor extends JPanel {
 
     private final JTextField title = new JTextField();
     private final JTextArea notes = new JTextArea();
+    private final JButton start, stop;
 
     public SessionEditor() {
         super(new BorderLayout());
@@ -40,8 +41,9 @@ public class SessionEditor extends JPanel {
         add(notesRow, BorderLayout.CENTER);
 
         JPanel buttons = new JPanel(new BorderLayout());
-        JButton start = new JButton("Record");
-        JButton stop = new JButton("Stop");
+        start = new JButton("Record");
+        stop = new JButton("Stop");
+        stop.setEnabled(false);
         buttons.add(start, BorderLayout.WEST);
         buttons.add(stop, BorderLayout.EAST);
         add(buttons, BorderLayout.SOUTH);
@@ -95,11 +97,17 @@ public class SessionEditor extends JPanel {
         session.setNotes(notes.getText());
         controller.setSession(session);
         controller.setRecording(true);
+        start.setEnabled(false);
+        stop.setEnabled(true);
     }
 
     private void stop() {
         controller.setRecording(false);
         title.setText("");
+        start.setEnabled(true);
+        stop.setEnabled(false);
+        EmotivSession session = new EmotivSession();
+        controller.setSession(session);
     }
 
     private void titleChanged() {
