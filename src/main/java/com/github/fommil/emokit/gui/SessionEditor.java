@@ -113,7 +113,7 @@ public class SessionEditor extends JPanel {
     private String updateTitle() {
         Matcher matcher = Pattern.compile("^(.*)(\\d++)$").matcher(title.getText());
         if (!matcher.find())
-            return title.getText() + "1";
+            return title.getText() + " 1";
         return matcher.group(1) + (Integer.parseInt(matcher.group(2)) + 1);
     }
 
