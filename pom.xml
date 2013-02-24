@@ -42,6 +42,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <build.version>${project.version}-r${buildNumber}</build.version>
     </properties>
 
     <repositories>
