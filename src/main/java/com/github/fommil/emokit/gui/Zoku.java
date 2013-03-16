@@ -1,12 +1,12 @@
 // Copyright Samuel Halliday 2012
 package com.github.fommil.emokit.gui;
 
-import com.github.fommil.emokit.Packet;
-import com.google.common.base.Preconditions;
-import com.github.fommil.persistence.CrudDao;
-import lombok.extern.java.Log;
 import com.github.fommil.emokit.Emotiv;
+import com.github.fommil.emokit.Packet;
 import com.github.fommil.emokit.jpa.EmotivJpaController;
+import com.github.fommil.jpa.CrudDao;
+import com.google.common.base.Preconditions;
+import lombok.extern.java.Log;
 
 import javax.persistence.EntityManagerFactory;
 import javax.swing.*;
