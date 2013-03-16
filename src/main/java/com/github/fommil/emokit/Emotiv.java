@@ -55,6 +55,10 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
         public void receivePacket(Packet packet);
     }
 
+    public interface DatumListener {
+        public void receiveDatum(EmotivDatum datum);
+    }
+
     private final EmotivHid raw;
     private final AtomicBoolean accessed = new AtomicBoolean();
     private final Cipher cipher;

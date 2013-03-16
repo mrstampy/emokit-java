@@ -62,9 +62,9 @@
     <!-- mvn versions:display-dependency-updates -->
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>0.11.6</version>
+            <groupId>com.github.peichhorn</groupId>
+            <artifactId>lombok-pg</artifactId>
+            <version>0.11.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

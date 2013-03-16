@@ -2,17 +2,16 @@
 package com.github.fommil.emokit.gui;
 
 import com.github.fommil.emokit.Emotiv;
-import com.github.fommil.emokit.Packet;
+import com.github.fommil.emokit.jpa.EmotivDistributor;
 import com.github.fommil.emokit.jpa.EmotivJpaController;
 import com.github.fommil.jpa.CrudDao;
-import com.google.common.base.Preconditions;
+import com.github.fommil.swing.SwingConvenience;
 import lombok.extern.java.Log;
 
 import javax.persistence.EntityManagerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 /**
@@ -33,7 +32,7 @@ public class Zoku {
         EmotivJpaController database = new EmotivJpaController(emf);
 
         JFrame frame = new JFrame("Zoku");
-        enableOSXFullscreen(frame);
+        SwingConvenience.enableOSXFullscreen(frame);
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1200, 800);
@@ -63,34 +62,16 @@ public class Zoku {
             try {
                 // refactor to have an asynchronous runner
                 Emotiv emotive = new Emotiv();
-                for (Packet packet : emotive) {
-                    database.receivePacket(packet);
-                    quality.receivePacket(packet);
-                    battery.receivePacket(packet);
-                    gyro.receivePacket(packet);
-                    sensors.receivePacket(packet);
-                }
+                EmotivDistributor runner = new EmotivDistributor(emotive);
+                runner.addPacketListener(database);
+                runner.addPacketListener(quality);
+                runner.addPacketListener(battery);
+                runner.addPacketListener(gyro);
+                runner.addPacketListener(sensors);
             } catch (IOException e) {
                 log.log(Level.SEVERE, "", e);
                 System.exit(0);
             }
-        }
-    }
-
-    /**
-     * @param window
-     */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static void enableOSXFullscreen(Window window) {
-        Preconditions.checkNotNull(window);
-        try {
-            Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
-            Class params[] = new Class[]{Window.class, Boolean.TYPE};
-            Method method = util.getMethod("setWindowCanFullScreen", params);
-            method.invoke(util, window, true);
-        } catch (ClassNotFoundException ignored) {
-        } catch (Exception e) {
-            log.log(Level.WARNING, "OS X Fullscreen FAIL", e);
         }
     }
 
