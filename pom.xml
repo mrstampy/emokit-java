@@ -27,8 +27,8 @@
     </licenses>
     <scm>
         <url>https://github.com/fommil/emokit-java</url>
-        <connection>scm:git:git//github.com/fommil/emokit-java.git</connection>
-        <developerConnection>scm:git:git//github.com/fommil/emokit-java.git</developerConnection>
+        <connection>scm:git:git@github.com:fommil/emokit-java.git</connection>
+        <developerConnection>scm:git:git@github.com:fommil/emokit-java.git</developerConnection>
     </scm>
     <developers>
         <developer>
