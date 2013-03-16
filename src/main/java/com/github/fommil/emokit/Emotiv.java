@@ -102,9 +102,9 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
                     byte[] bytes = new byte[EmotivHid.BUFSIZE];
                     byte lastCounter = -1;
 
-                    long lastTimestamp = System.currentTimeMillis();
+//                    long lastTimestamp = System.currentTimeMillis();
                     while (!iterator.stopped()) {
-                        sun.misc.Unsafe.getUnsafe().park(true, lastTimestamp + 7);
+//                        sun.misc.Unsafe.getUnsafe().park(true, lastTimestamp + 7);
                         raw.poll(bytes);
 
                         long timestamp = System.currentTimeMillis();
