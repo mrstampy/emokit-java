@@ -62,11 +62,6 @@
     <!-- mvn versions:display-dependency-updates -->
     <dependencies>
         <dependency>
-            <groupId>com.github.fommil</groupId>
-            <artifactId>java-logging</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>0.11.6</version>
@@ -80,7 +75,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>13.0.1</version>
+            <version>14.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
@@ -102,13 +97,19 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.2.0.CR1</version>
+            <version>4.2.0.CR2</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.1-901-1.jdbc4</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.fommil</groupId>
+            <artifactId>java-logging</artifactId>
+            <version>1.0</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
