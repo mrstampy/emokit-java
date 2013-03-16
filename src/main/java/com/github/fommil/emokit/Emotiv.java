@@ -97,11 +97,13 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
                 try {
                     byte[] bytes = new byte[EmotivHid.BUFSIZE];
                     byte lastCounter = -1;
+
+                    long lastTimestamp = System.currentTimeMillis();
                     while (!iterator.stopped()) {
-                        Thread.yield();
+                        sun.misc.Unsafe.getUnsafe().park(true, lastTimestamp + 7);
                         raw.poll(bytes);
 
-                        long start = System.currentTimeMillis();
+                        long timestamp = System.currentTimeMillis();
 
                         byte[] decrypted = cipher.doFinal(bytes);
 
@@ -123,14 +125,8 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
                             quality.put(channel, reading);
                         }
 
-                        Packet packet = new Packet(start, battery, decrypted, Maps.newEnumMap(quality));
+                        Packet packet = new Packet(timestamp, battery, decrypted, Maps.newEnumMap(quality));
                         iterator.produce(packet);
-
-                        long end = System.currentTimeMillis();
-                        Emotiv.log.config("Decryption time: " + (end - start));
-                        if ((end - start) > 7) {
-                            Emotiv.log.warning("Decryption took longer than expected: " + (end - start));
-                        }
                     }
                 } catch (Exception e) {
                     Emotiv.log.log(Level.SEVERE, "Problem when polling", e);
