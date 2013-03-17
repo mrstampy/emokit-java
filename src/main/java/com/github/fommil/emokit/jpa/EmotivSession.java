@@ -24,6 +24,12 @@ public class EmotivSession {
     @Column
     private String name;
 
+    @Column
+    private String subject; // human / monkey / robot / pirate / alien
+
+    @Column
+    private UUID sitting = UUID.randomUUID();
+
     @Lob
     @Column(length = 8192)
     private String notes;
