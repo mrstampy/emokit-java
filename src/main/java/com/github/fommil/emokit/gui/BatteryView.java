@@ -2,7 +2,7 @@
 
 package com.github.fommil.emokit.gui;
 
-import com.github.fommil.emokit.Emotiv;
+import com.github.fommil.emokit.EmotivListener;
 import com.github.fommil.emokit.Packet;
 
 import javax.swing.*;
@@ -12,7 +12,7 @@ import javax.swing.*;
  *
  * @author Sam Halliday
  */
-public class BatteryView extends JProgressBar implements Emotiv.PacketListener {
+public class BatteryView extends JProgressBar implements EmotivListener {
 
     @Override
     public void receivePacket(Packet packet) {

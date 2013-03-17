@@ -2,18 +2,14 @@
 
 package com.github.fommil.emokit.jpa;
 
-import com.github.fommil.emokit.Emotiv;
+import com.github.fommil.emokit.EmotivListener;
 import com.github.fommil.emokit.Packet;
 import com.google.common.base.Preconditions;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 
 import javax.persistence.EntityManagerFactory;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * Abstracts the lower level CRUD operations for recording
@@ -24,31 +20,26 @@ import java.util.concurrent.Executors;
  * to persist (one of the failings of JPA is that it isn't
  * fully compatible with PropertyChangeListener support).
  * <p/>
- * Persistence is performed in background worker threads.
- * <p/>
  * The session object must be re-obtained from the database
  * layer in order to see all associated data.
  *
  * @author Sam Halliday
  */
 @Log
-public class EmotivJpaController implements Emotiv.PacketListener {
+public class EmotivJpaController implements EmotivListener {
 
     private final EmotivDatumCrud datumCrud;
     private final EmotivSessionCrud sessionCrud;
-    private final Executor executor;
+
     @Getter
     private volatile EmotivSession session;
-    @Getter @Setter
+    @Getter
+    @Setter
     private volatile boolean recording;
 
     public EmotivJpaController(EntityManagerFactory emf) {
         datumCrud = new EmotivDatumCrud(emf);
         sessionCrud = new EmotivSessionCrud(emf);
-
-        Config config = ConfigFactory.load().getConfig("com.github.fommil.emokit.jpa.controller");
-        int threads = config.getInt("threads");
-        executor = Executors.newFixedThreadPool(threads);
     }
 
     public void setSession(EmotivSession session) {
@@ -66,19 +57,9 @@ public class EmotivJpaController implements Emotiv.PacketListener {
     public void receivePacket(final Packet packet) {
         if (!recording)
             return;
-        final EmotivSession session = this.session;
-        final long start = System.currentTimeMillis();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run () {
-                EmotivDatum datum = EmotivDatum.fromPacket(packet);
-                datum.setSession(session);
-
-                datumCrud.create(datum); // taking about 6 millis
-                long end = System.currentTimeMillis();
-                log.config("Persistence took " + (end - start));
-            }
-        };
-        executor.execute(runnable);
+        EmotivSession session = this.session;
+        EmotivDatum datum = EmotivDatum.fromPacket(packet);
+        datum.setSession(session);
+        datumCrud.create(datum);
     }
 }

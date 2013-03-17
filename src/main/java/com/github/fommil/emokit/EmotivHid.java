@@ -3,6 +3,7 @@ package com.github.fommil.emokit;
 
 import com.codeminders.hidapi.*;
 import com.google.common.collect.Lists;
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -47,6 +48,8 @@ final class EmotivHid implements Closeable {
 
     private volatile boolean research = false;
     private final HIDDevice device;
+    @Getter
+    private volatile boolean closed;
 
     public EmotivHid() throws IOException {
         device = findEmotiv();
@@ -55,6 +58,7 @@ final class EmotivHid implements Closeable {
 
     @Override
     public void close() throws IOException {
+        closed = true;
         device.close();
     }
 

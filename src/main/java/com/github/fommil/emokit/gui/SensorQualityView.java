@@ -1,6 +1,8 @@
 package com.github.fommil.emokit.gui;
 
-import com.github.fommil.emokit.Emotiv;
+import com.github.fommil.emokit.EmotivListener;
+import com.github.fommil.emokit.Packet;
+import com.github.fommil.emokit.Packet.Sensor;
 import com.google.common.collect.Maps;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
@@ -8,8 +10,6 @@ import com.typesafe.config.ConfigFactory;
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.Setter;
-import com.github.fommil.emokit.Packet;
-import com.github.fommil.emokit.Packet.Sensor;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author Sam Halliday
  */
-public class SensorQualityView extends JPanel implements Emotiv.PacketListener {
+public class SensorQualityView extends JPanel implements EmotivListener {
 
     private final BufferedImage image;
     private final Map<Sensor, Point> sensors = Maps.newHashMap();

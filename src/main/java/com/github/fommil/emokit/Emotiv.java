@@ -1,19 +1,27 @@
 // Copyright Samuel Halliday 2012
 package com.github.fommil.emokit;
 
-import com.google.common.collect.Maps;
-import com.github.fommil.utils.ProducerConsumer;
-import lombok.Getter;
-import lombok.extern.java.Log;
 import com.github.fommil.emokit.jpa.EmotivDatum;
 import com.github.fommil.emokit.jpa.EmotivSession;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import lombok.Getter;
+import lombok.extern.java.Log;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
@@ -28,36 +36,28 @@ import java.util.logging.Level;
  */
 @Log
 @NotThreadSafe
-public final class Emotiv implements Iterable<Packet>, Closeable {
+public final class Emotiv implements Closeable {
 
     public static void main(String[] args) throws Exception {
         Emotiv emotiv = new Emotiv();
 
-        EmotivSession session = new EmotivSession();
+        final EmotivSession session = new EmotivSession();
         session.setName("My Session");
         session.setNotes("My Notes for " + emotiv.getSerial());
 
-        for (Packet packet : emotiv) {
-            EmotivDatum datum = EmotivDatum.fromPacket(packet);
-            datum.setSession(session);
+        emotiv.addEmotivListener(new EmotivListener() {
+            @Override
+            public void receivePacket(Packet packet) {
+                EmotivDatum datum = EmotivDatum.fromPacket(packet);
+                datum.setSession(session);
+                Emotiv.log.info(datum.toString());
+            }
+        });
 
-            Emotiv.log.info(datum.toString());
-        }
+        emotiv.start();
+        Thread.currentThread().wait();
     }
 
-    /**
-     * Asynchronous listener interface for packets from an emotive.
-     */
-    public interface PacketListener {
-        /**
-         * @param packet
-         */
-        public void receivePacket(Packet packet);
-    }
-
-    public interface DatumListener {
-        public void receiveDatum(EmotivDatum datum);
-    }
 
     private final EmotivHid raw;
     private final AtomicBoolean accessed = new AtomicBoolean();
@@ -68,6 +68,8 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
     
     @Getter
     private final String serial;
+
+    private final Executor executor;
 
     /**
      * @throws IOException if there was a problem discovering the device.
@@ -82,59 +84,27 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
             throw new IllegalStateException("no javax.crypto support");
         }
         serial = raw.getSerial();
+
+        Config config = ConfigFactory.load().getConfig("com.github.fommil.emokit");
+        int threads = config.getInt("threads");
+        executor = Executors.newFixedThreadPool(threads);
     }
 
     /**
-     * Can only be called once.
-     *
-     * @return a one-shot iterator.
+     * Poll the device in a background thread and sends signals to registered
+     * listeners using a thread pool.
      */
-    public ProducerConsumer<Packet> iterator() {
+    public void start() {
         if (accessed.getAndSet(true))
             throw new IllegalStateException("Cannot be called more than once.");
-
-        final ProducerConsumer<Packet> iterator = new ProducerConsumer<Packet>();
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 try {
-                    byte[] bytes = new byte[EmotivHid.BUFSIZE];
-                    byte lastCounter = -1;
-
-//                    long lastTimestamp = System.currentTimeMillis();
-                    while (!iterator.stopped()) {
-//                        sun.misc.Unsafe.getUnsafe().park(true, lastTimestamp + 7);
-                        raw.poll(bytes);
-
-                        long timestamp = System.currentTimeMillis();
-
-                        byte[] decrypted = cipher.doFinal(bytes);
-
-                        // the counter is used to mixin battery and quality levels
-                        byte counter = decrypted[0];
-                        if (counter != lastCounter + 1 && lastCounter != 127)
-                            Emotiv.log.config("missed a packet");
-
-                        if (counter < 0) {
-                            lastCounter = -1;
-                            battery = 0xFF & counter;
-                        } else {
-                            lastCounter = counter;
-                        }
-
-                        Packet.Sensor channel = getQualityChannel(counter);
-                        if (channel != null) {
-                            int reading = Packet.Sensor.QUALITY.apply(decrypted);
-                            quality.put(channel, reading);
-                        }
-
-                        Packet packet = new Packet(timestamp, battery, decrypted, Maps.newEnumMap(quality));
-                        iterator.produce(packet);
-                    }
+                    poller();
                 } catch (Exception e) {
                     Emotiv.log.log(Level.SEVERE, "Problem when polling", e);
-                    iterator.close();
                     try {
                         close();
                     } catch (IOException ignored) {
@@ -146,7 +116,43 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
         Thread thread = new Thread(runnable, "Emotiv polling and decryption");
         thread.setDaemon(true);
         thread.start();
-        return iterator;
+    }
+
+    private void poller() throws TimeoutException, IOException, BadPaddingException, IllegalBlockSizeException {
+        byte[] bytes = new byte[EmotivHid.BUFSIZE];
+        byte lastCounter = -1;
+
+//                    long lastTimestamp = System.currentTimeMillis();
+        while (!raw.isClosed()) {
+//                        sun.misc.Unsafe.getUnsafe().park(true, lastTimestamp + 7);
+            raw.poll(bytes);
+
+            long timestamp = System.currentTimeMillis();
+
+            byte[] decrypted = cipher.doFinal(bytes);
+
+            // the counter is used to mixin battery and quality levels
+            byte counter = decrypted[0];
+            if (counter != lastCounter + 1 && lastCounter != 127)
+                log.config("missed a packet");
+
+            if (counter < 0) {
+                lastCounter = -1;
+                battery = 0xFF & counter;
+            } else {
+                lastCounter = counter;
+            }
+
+            Packet.Sensor channel = getQualityChannel(counter);
+            if (channel != null) {
+                int reading = Packet.Sensor.QUALITY.apply(decrypted);
+                quality.put(channel, reading);
+            }
+
+            Packet packet = new Packet(timestamp, battery, decrypted, Maps.newEnumMap(quality));
+            fireReceivePacket(packet);
+        }
+
     }
 
     private Packet.Sensor getQualityChannel(byte counter) {
@@ -199,4 +205,27 @@ public final class Emotiv implements Iterable<Packet>, Closeable {
     public void close() throws IOException {
         raw.close();
     }
+
+    // https://github.com/peichhorn/lombok-pg/issues/139
+    protected void fireReceivePacket(final Packet arg0) {
+        for (final EmotivListener l : $registeredEmotivListener) {
+            Runnable runnable = new Runnable(){
+                @Override
+                public void run() {
+                    l.receivePacket(arg0);
+                }
+            };
+            executor.execute(runnable);
+        }
+    }
+
+    // http://code.google.com/p/projectlombok/issues/detail?id=460
+    private final List<EmotivListener> $registeredEmotivListener = Lists.newCopyOnWriteArrayList();
+    public void addEmotivListener(final EmotivListener l) {
+        if (!$registeredEmotivListener.contains(l)) $registeredEmotivListener.add(l);
+    }
+    public void removeEmotivListener(final EmotivListener l) {
+        $registeredEmotivListener.remove(l);
+    }
+
 }

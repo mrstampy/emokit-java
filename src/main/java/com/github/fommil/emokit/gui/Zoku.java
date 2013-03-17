@@ -2,7 +2,6 @@
 package com.github.fommil.emokit.gui;
 
 import com.github.fommil.emokit.Emotiv;
-import com.github.fommil.emokit.jpa.EmotivDistributor;
 import com.github.fommil.emokit.jpa.EmotivJpaController;
 import com.github.fommil.jpa.CrudDao;
 import com.github.fommil.swing.SwingConvenience;
@@ -58,21 +57,20 @@ public class Zoku {
 
         frame.setVisible(true);
 
-        while (true) {
+//        while (true) {
             try {
-                // refactor to have an asynchronous runner
-                Emotiv emotive = new Emotiv();
-                EmotivDistributor runner = new EmotivDistributor(emotive);
-                runner.addPacketListener(database);
-                runner.addPacketListener(quality);
-                runner.addPacketListener(battery);
-                runner.addPacketListener(gyro);
-                runner.addPacketListener(sensors);
+                Emotiv emotiv = new Emotiv();
+                emotiv.addEmotivListener(database);
+                emotiv.addEmotivListener(quality);
+                emotiv.addEmotivListener(battery);
+                emotiv.addEmotivListener(gyro);
+                emotiv.addEmotivListener(sensors);
+                emotiv.start();
             } catch (IOException e) {
                 log.log(Level.SEVERE, "", e);
-                System.exit(0);
+                System.exit(1);
             }
-        }
+//        }
     }
 
 }

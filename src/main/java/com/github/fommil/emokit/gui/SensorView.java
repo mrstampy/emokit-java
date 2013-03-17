@@ -2,6 +2,7 @@
 
 package com.github.fommil.emokit.gui;
 
+import com.github.fommil.emokit.EmotivListener;
 import com.github.fommil.emokit.Packet;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.google.common.collect.Ordering;
@@ -9,7 +10,6 @@ import com.google.common.collect.Sets;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.extern.java.Log;
-import com.github.fommil.emokit.Emotiv.PacketListener;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Sam Halliday
  */
 @Log
-public class SensorView extends JPanel implements PacketListener {
+public class SensorView extends JPanel implements EmotivListener {
 
     private final Config config = ConfigFactory.load().getConfig("com.github.fommil.emokit.gui.sensors");
 
