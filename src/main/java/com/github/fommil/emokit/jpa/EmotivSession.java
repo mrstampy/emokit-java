@@ -30,8 +30,9 @@ public class EmotivSession {
     @Column
     private UUID sitting = UUID.randomUUID();
 
-    @Lob
-    @Column(length = 8192)
+    // http://stackoverflow.com/questions/9158645
+    // https://hibernate.onjira.com/browse/JPA-48
+    @Column(columnDefinition="TEXT")
     private String notes;
 
     @OneToMany(mappedBy = "session")
