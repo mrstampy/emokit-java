@@ -62,4 +62,7 @@ public class EmotivJpaController implements EmotivListener {
         datum.setSession(session);
         datumCrud.create(datum);
     }
+
+    @Override
+    public void connectionBroken() { }
 }

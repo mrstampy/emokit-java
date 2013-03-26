@@ -23,6 +23,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 /**
@@ -45,6 +47,8 @@ public final class Emotiv implements Closeable {
         session.setName("My Session");
         session.setNotes("My Notes for " + emotiv.getSerial());
 
+        final Condition condition = new ReentrantLock().newCondition();
+
         emotiv.addEmotivListener(new EmotivListener() {
             @Override
             public void receivePacket(Packet packet) {
@@ -52,10 +56,15 @@ public final class Emotiv implements Closeable {
                 datum.setSession(session);
                 Emotiv.log.info(datum.toString());
             }
+
+            @Override
+            public void connectionBroken() {
+                condition.signal();
+            }
         });
 
-        emotiv.start();
-        Thread.currentThread().wait();
+       emotiv.start();
+       condition.await();
     }
 
 
@@ -109,6 +118,7 @@ public final class Emotiv implements Closeable {
                         close();
                     } catch (IOException ignored) {
                     }
+                    fireConnectionBroken();
                 }
             }
         };
@@ -213,6 +223,18 @@ public final class Emotiv implements Closeable {
                 @Override
                 public void run() {
                     l.receivePacket(arg0);
+                }
+            };
+            executor.execute(runnable);
+        }
+    }
+
+    protected void fireConnectionBroken() {
+        for (final EmotivListener l : $registeredEmotivListener) {
+            Runnable runnable = new Runnable(){
+                @Override
+                public void run() {
+                    l.connectionBroken();
                 }
             };
             executor.execute(runnable);

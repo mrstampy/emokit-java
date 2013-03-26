@@ -88,4 +88,7 @@ public class SensorView extends JPanel implements EmotivListener {
         }
         repaint();
     }
+
+    @Override
+    public void connectionBroken() { }
 }

@@ -9,6 +9,13 @@ public interface EmotivListener {
     /**
      * @param packet
      */
-    public void receivePacket(Packet packet);
+    void receivePacket(Packet packet);
 
+    /**
+     * Called if the underlying connection has become irretrievably broken.
+     * <p/>
+     * Robust applications may choose to unregister listeners and spawn a
+     * new Emotiv connection.
+     */
+    void connectionBroken();
 }

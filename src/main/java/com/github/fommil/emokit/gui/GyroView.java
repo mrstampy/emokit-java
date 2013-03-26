@@ -66,4 +66,7 @@ public class GyroView extends JPanel implements EmotivListener {
         gyroY = packet.getGyroY();
         repaint();
     }
+
+    @Override
+    public void connectionBroken() { }
 }

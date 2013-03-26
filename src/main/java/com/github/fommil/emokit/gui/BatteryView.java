@@ -20,4 +20,7 @@ public class BatteryView extends JProgressBar implements EmotivListener {
         setValue(battery);
         repaint();
     }
+
+    @Override
+    public void connectionBroken() { }
 }
