@@ -31,10 +31,10 @@ public class EmotivJpaController implements EmotivListener {
     private final EmotivDatumCrud datumCrud;
     private final EmotivSessionCrud sessionCrud;
 
-    @Getter
+    @Getter @Setter
     private volatile EmotivSession session;
-    @Getter
-    @Setter
+
+    @Getter @Setter
     private volatile boolean recording;
 
     public EmotivJpaController(EntityManagerFactory emf) {
@@ -42,14 +42,13 @@ public class EmotivJpaController implements EmotivListener {
         sessionCrud = new EmotivSessionCrud(emf);
     }
 
-    public void setSession(EmotivSession session) {
+    public void createSession(EmotivSession session) {
         this.session = session;
         sessionCrud.create(session);
     }
 
     public void updateSession(EmotivSession session) {
         Preconditions.checkNotNull(session);
-        Preconditions.checkArgument(session.equals(this.session));
         sessionCrud.update(session);
     }
 

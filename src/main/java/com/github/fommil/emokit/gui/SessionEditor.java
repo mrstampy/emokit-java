@@ -97,7 +97,7 @@ public class SessionEditor extends JPanel {
         EmotivSession session = new EmotivSession();
         session.setName(title.getText());
         session.setNotes(notes.getText());
-        controller.setSession(session);
+        controller.createSession(session);
         controller.setRecording(true);
         start.setEnabled(false);
         stop.setEnabled(true);
