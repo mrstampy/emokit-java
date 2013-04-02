@@ -7,6 +7,11 @@ Open Source Java driver to access raw data from the [Emotiv EPOC EEG](http://www
 
 *(click image for a video of the demonstration data acquisition application)*
 
+Applications using EmoKit
+=========================
+
+* [Neurofiction](http://neurofiction.net)
+
 Demo
 ====
 
