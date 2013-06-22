@@ -4,7 +4,6 @@ package com.github.fommil.emokit;
 import com.github.fommil.emokit.jpa.EmotivDatum;
 import com.github.fommil.emokit.jpa.EmotivSession;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.Getter;
@@ -18,7 +17,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
@@ -71,10 +69,8 @@ public final class Emotiv implements Closeable {
     private final EmotivHid raw;
     private final AtomicBoolean accessed = new AtomicBoolean();
     private final Cipher cipher;
-    private final Map<Packet.Sensor, Integer> quality = Maps.newEnumMap(Packet.Sensor.class);
+    private final EmotivParser parser = new EmotivParser();
 
-    private volatile int battery;
-    
     @Getter
     private final String serial;
 
@@ -130,84 +126,15 @@ public final class Emotiv implements Closeable {
 
     private void poller() throws TimeoutException, IOException, BadPaddingException, IllegalBlockSizeException {
         byte[] bytes = new byte[EmotivHid.BUFSIZE];
-        byte lastCounter = -1;
 
-//                    long lastTimestamp = System.currentTimeMillis();
         while (!raw.isClosed()) {
-//                        sun.misc.Unsafe.getUnsafe().park(true, lastTimestamp + 7);
             raw.poll(bytes);
 
             long timestamp = System.currentTimeMillis();
-
             byte[] decrypted = cipher.doFinal(bytes);
 
-            // the counter is used to mixin battery and quality levels
-            byte counter = decrypted[0];
-            if (counter != lastCounter + 1 && lastCounter != 127)
-                log.config("missed a packet");
-
-            if (counter < 0) {
-                lastCounter = -1;
-                battery = 0xFF & counter;
-            } else {
-                lastCounter = counter;
-            }
-
-            Packet.Sensor channel = getQualityChannel(counter);
-            if (channel != null) {
-                int reading = Packet.Sensor.QUALITY.apply(decrypted);
-                quality.put(channel, reading);
-            }
-
-            Packet packet = new Packet(timestamp, battery, decrypted, Maps.newEnumMap(quality));
+            Packet packet = parser.parse(timestamp, decrypted);
             fireReceivePacket(packet);
-        }
-
-    }
-
-    private Packet.Sensor getQualityChannel(byte counter) {
-        if (64 <= counter && counter <= 75) {
-            counter = (byte) (counter - 64);
-        }
-        // TODO: https://github.com/fommil/emokit-java/issues/3
-//        else if (76 <= counter) {
-//            counter = (byte) ((counter - 76) % 4 + 15);
-//        }
-        switch (counter) {
-            case 0:
-                return Packet.Sensor.F3;
-            case 1:
-                return Packet.Sensor.FC5;
-            case 2:
-                return Packet.Sensor.AF3;
-            case 3:
-                return Packet.Sensor.F7;
-            case 4:
-                return Packet.Sensor.T7;
-            case 5:
-                return Packet.Sensor.P7;
-            case 6:
-                return Packet.Sensor.O1;
-            case 7:
-                return Packet.Sensor.O2;
-            case 8:
-                return Packet.Sensor.P8;
-            case 9:
-                return Packet.Sensor.T8;
-            case 10:
-                return Packet.Sensor.F8;
-            case 11:
-                return Packet.Sensor.AF4;
-            case 12:
-                return Packet.Sensor.FC6;
-            case 13:
-                return Packet.Sensor.F4;
-            case 14:
-                return Packet.Sensor.F8;
-            case 15:
-                return Packet.Sensor.AF4;
-            default:
-                return null;
         }
     }
 
