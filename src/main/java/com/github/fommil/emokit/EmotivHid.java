@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import static java.lang.String.format;
-import static java.lang.System.nanoTime;
+import static java.lang.System.currentTimeMillis;
 
 /**
  * Wrapper for the low level HIDAPI to access an Emotiv EEG.
@@ -80,8 +80,8 @@ final class EmotivHid implements Closeable {
         assert buf.length == BUFSIZE;
 
         int n;
-        long startTime = nanoTime();
-        while((n = device.readTimeout(buf, 0)) == 0 && nanoTime() - startTime < TIMEOUT)
+        long startTime = currentTimeMillis();
+        while((n = device.readTimeout(buf, 0)) == 0 && currentTimeMillis() - startTime < TIMEOUT)
           Thread.yield();
 
         if (n != BUFSIZE)
