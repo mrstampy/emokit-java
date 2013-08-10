@@ -81,8 +81,15 @@ final class EmotivHid implements Closeable {
 
         int n;
         long startTime = currentTimeMillis();
-        while((n = device.readTimeout(buf, 0)) == 0 && currentTimeMillis() - startTime < TIMEOUT)
+        while((n = device.readTimeout(buf, 0)) == 0 && currentTimeMillis() - startTime < TIMEOUT) {
+          try {
+            // limits us to 100Hz samples
+            // http://stackoverflow.com/questions/11094857
+            Thread.sleep(10);
+          } catch (InterruptedException e) {
+          }
           Thread.yield();
+        }
 
         if (n != BUFSIZE)
             throw new IOException(format("Bad Packet: (%s) %s", n, Arrays.toString(buf)));
