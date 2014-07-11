@@ -20,7 +20,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.spec.SecretKeySpec;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.java.Log;
 
 import com.github.fommil.emokit.jpa.EmotivDatum;
@@ -84,8 +83,7 @@ public final class Emotiv implements Closeable {
     private final Executor executor;
 
     @Getter
-    @Setter
-    private RejectionHandlerPolicy rejectionHandlerPolicy;
+    private final RejectionHandlerPolicy rejectionHandlerPolicy;
 
     private static Config config = ConfigFactory.load();
     
@@ -125,7 +123,7 @@ public final class Emotiv implements Closeable {
         serial = raw.getSerial();
 
         this.executor = executor;
-        setRejectionHandlerPolicy(policy);
+        this.rejectionHandlerPolicy = policy;
 
         setDefaultRejectionHandlerWithCheck(handlerCheck);
     }
