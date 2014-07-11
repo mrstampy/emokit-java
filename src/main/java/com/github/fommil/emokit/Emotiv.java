@@ -108,7 +108,7 @@ public final class Emotiv implements Closeable {
     }
 
     public Emotiv(Executor executor, RejectionHandlerPolicy policy) throws IOException {
-        this(executor, policy, true);
+        this(executor, policy, false);
     }
     
     private Emotiv(Executor executor, RejectionHandlerPolicy policy, boolean handlerCheck) throws IOException {
